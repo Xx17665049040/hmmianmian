@@ -1,23 +1,24 @@
-// 开发中路由都是独立放在这里 全局的才放在main.js
+// 导入Vue
 import Vue from 'vue'
 
-//导入路由 饿了么
+// 导入路由
 import VueRouter from 'vue-router'
-import ElementUI from 'element-ui';
 
-// 注册路由 饿了么
+// 注册路由
 Vue.use(VueRouter)
-Vue.use(ElementUI);
 
-//准备组件
+// 准备组件
+import login from "../views/login/index.vue"
 
-//设置路由规则
-const routes = []
+// 设置路由规则
+const routes = [
+  { path:"/login",component:login }
+]
 
-//创建路由对象
-const router =new VueRouter({
+// 创建路由对象
+const router = new VueRouter({
   routes
 })
 
-//暴露出去
+// 暴露出去
 export default router

@@ -1,8 +1,6 @@
 <template>
-  <div id="app">
-    <router-link to="#">路由导入测试</router-link>
-    <el-button>饿了么导入测试</el-button>
-  </div>
+    <!-- 路由出口 -->
+    <router-view></router-view>
 </template>
 
 <script>
