@@ -52,17 +52,30 @@
 
         <el-form-item>
           <el-button class="box-btn" type="primary" @click="doLogin">登录</el-button>
-          <el-button class="box-btn" type="primary">注册</el-button>
+          <el-button class="box-btn" type="primary" @click="showReg">注册</el-button>
         </el-form-item>
       </el-form>
     </div>
+
     <!-- 右侧图片 -->
     <img src="./images/login_banner_ele.png" alt />
+
+    <!-- 3.在需要组建的地方写标签 -->
+     <reg ref="reg"></reg> 
   </div>
+
 </template>
 
 <script>
+//1. 导入模态框组件
+import reg from './components/register'
+
 export default {
+  // 2.注册组件
+  components:{
+    reg
+  },
+
   data() {
     return {
       // 跟表单双向绑定的数据
@@ -70,7 +83,8 @@ export default {
         phone: "",
         password: "",
         code: "",
-        agree:false
+        agree:false,
+       
       },
       // 规则对象
       rules: {
@@ -92,11 +106,13 @@ export default {
           // 只有值为true才满足条件，否则代表不匹配
           { pattern:/true/, message:'必须勾选同意用户协议',trigger:"change"}
         ]
-      }
+      },
+      
     };
   },
 
   methods: {
+    // 登录事件
     doLogin() {
       // 找到表单对象，调用validate方法
       this.$refs.loginForm.validate(v => {
@@ -105,6 +121,10 @@ export default {
           // 正儿八经发请求比较合理
         }
       });
+    },
+    // 注册事件
+    showReg(){
+      this.$refs.reg.dialogFormVisible=true
     }
   }
 };
