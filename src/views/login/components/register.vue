@@ -72,9 +72,9 @@
 <script>
 // import axios from "axios";
 // 导入某个文件的方法的 写法
-import {sendMS,register} from  '../api/register.js'
+// import {sendMS,register} from  '../api/register.js'
 
-// import {sendMS} from '@/views/login/api/register.js'
+import {sendMS,register} from '@/api/register.js'
     // 这里{}写法不懂  @是vue-cli提供的符号 只有在这里能用 代表的是src这个文件 意思就是从src开始找
 
 export default {
@@ -135,7 +135,7 @@ export default {
         ],
         password: [
           { required: true, message: "密码不能为空", trigger: "blur" },
-          { min: 5, max: 14, message: "长度在5-14之间", trigger: "change" }
+          { min: 5, max: 14, message: "长度在5-14之间", trigger: "blur" }
         ]
       }
     };

@@ -34,7 +34,7 @@
               <el-input v-model="form.code" placeholder="请输入验证码" prefix-icon="el-icon-key"></el-input>
             </el-col>
             <el-col :span="7">
-              <img class="code" src="./images/login_code.png" alt />
+              <img class="code"  @click="getNewCode" :src="picCodeUrl" alt />
             </el-col>
           </el-row>
         </el-form-item>
@@ -68,7 +68,10 @@
 
 <script>
 //1. 导入模态框组件
-import reg from './components/register'
+import reg from './components/register';
+
+// 导入封装好的登录请求方法
+import { login } from "@/api/login.js"
 
 export default {
   // 2.注册组件
@@ -84,8 +87,10 @@ export default {
         password: "",
         code: "",
         agree:false,
-       
+        
       },
+      //图形验证码的接口地址
+      picCodeUrl: process.env.VUE_APP_URL +'/captcha?type=login',
       // 规则对象
       rules: {
         // 真正的规则
@@ -113,19 +118,40 @@ export default {
 
   methods: {
     // 登录事件
-    doLogin() {
+    doLogin(){
       // 找到表单对象，调用validate方法
       this.$refs.loginForm.validate(v => {
         if (v) {
-          alert("全部通过");
+          // alert("全部通过");
           // 正儿八经发请求比较合理
+          //验证成功就调用登录方法
+          login({
+            phone:this.form.phone,
+            password:this.form.password,
+            code:this.form.code
+          }).then(res=>{
+            window.console.log(res)
+            if(res.data.code==200){
+              //把token存储起来
+              window.localStorage.setItem('token',res.data.data.token)
+              this.$message.success('登录成功')
+              //登录跳转
+              this.$router.push('./index')
+            }else{
+              this.$message.error(res.data.message)
+            }
+          })
         }
       });
     },
     // 注册事件
     showReg(){
       this.$refs.reg.dialogFormVisible=true
-    }
+    },
+     getNewCode() {
+     
+      this.picCodeUrl = process.env.VUE_APP_URL + "/captcha?type=login&sb=" + Date.now();
+    },
   }
 };
 </script>
