@@ -136,7 +136,7 @@ export default {
             if(res.data.code==200){
               //把token存储起来 已经封装好了函数
               window.localStorage.setItem('token',res.data.data.token)
-            //  this.setToken(res.data.data.token)
+              // setToken(res.data.data.token)
 
               this.$message.success('登录成功')
               //登录跳转
