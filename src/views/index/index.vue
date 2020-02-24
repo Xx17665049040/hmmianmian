@@ -1,97 +1,168 @@
 <template>
+  <el-container class="my-container">
+    <el-header class="my-header">
+      <div class="left">
+          <!-- 这个图标需要控制导航栏的展开折叠,所以需要加取反 来控制true false -->
+          <!-- 这里的class图标 不要写死 要随着isCollapse的结果 来换另一个图标  用三元表达式 -->
+        <i @click="isCollapse=!isCollapse" :class="isCollapse? 'el-icon-s-unfold' : 'el-icon-s-fold'"></i>
+        <img src="./images/logo.png" alt="" />
+        <span>黑马面面</span>
+      </div>
+      <div class="right">
+        <img :src="avatar" alt="" />
+        <span class="name">{{ username }},你好</span>
+        <el-button @click="doLogout" type="primary" size="small"
+          >退出</el-button
+        >
+      </div>
+    </el-header>
 
-   <el-container class="my-container">
-        <el-header class="my-header">
-            <div class="left">
-                <i class="el-icon-s-fold"></i>
-                <img src="./images/logo.png" alt="">
-                <span>黑马面面</span>
-            </div>
-            <div class="right">
-                <img src="./images/logo.png" alt="">
-                <span class="name">李达,你好</span>
-                <el-button type="primary" size="small">退出</el-button>
-            </div>
+    <el-container>
+        <!-- 左侧导航栏 -->
+        <!-- 这里的width不能写死,要随着内容折叠变小 只要换成auto -->
+      <el-aside class="my-asid" width="auto">
+          <!-- :collapse="isCollapse" 用来控制折叠或者展开 -->
+          <el-menu :collapse="isCollapse"  default-active="1" class="el-menu-vertical-demo">
+            <el-menu-item index="1">
+               <i class="el-icon-pie-chart"></i>
+               <span slot="title">数据概览</span>
+             </el-menu-item> 
 
-        </el-header>
-        <el-container>
-          <el-aside class="my-asid" width="200px">Aside</el-aside>
-          <el-main class="my-main">Main</el-main>
-        </el-container>
+             <el-menu-item index="2">
+               <i class="el-icon-user"></i>
+               <span slot="title">用户列表</span>
+             </el-menu-item> 
+
+            <el-menu-item index="3">
+               <i class="el-icon-edit-outline"></i>
+               <span slot="title">题库列表</span>
+             </el-menu-item> 
+
+             <el-menu-item index="4">
+               <i class="el-icon-office-building"></i>
+               <span slot="title">企业列表</span>
+             </el-menu-item> 
+
+             <el-menu-item index="5">
+               <i class="el-icon-notebook-2"></i>
+               <span slot="title">学科列表</span>
+             </el-menu-item> 
+          </el-menu>
+      </el-aside>
+
+      <!-- 这个区域需要显示不同的页面,就在这里放子路由出口,也就是需要路由嵌套 -->
+      <el-main class="my-main">
+
+          <router-view></router-view>
+
+      </el-main>
+    </el-container>
   </el-container>
-
 </template>
 
 <script>
+//导入个人信息接口
+import { info,logout} from "@/api/index.js";
+//导入操作token接口
+import { removeToken } from "@/utilis/token.js";
 export default {
-    
-}
+  data() {
+    return {
+      username: "",
+      avatar: "",
+      isCollapse:false
+    };
+  },
+  created() {
+    //获取个人信息的请求
+    info().then(res => {
+      console.log(res),
+        (this.username = res.data.data.username),
+        (this.avatar = process.env.VUE_APP_URL + "/" + res.data.data.avatar);
+    });
+  },
+  methods: {
+    doLogout() {
+      this.$confirm("您将退出登录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+         //确定就调用.then  发请求退出 再删除token,并跳转登录页
+         logout().then(()=>{
+            this.$message.success("退出成功");
+            removeToken();
+            this.$router.push("/login")
+         })
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "取消本次退出"
+          });
+        });
+    }
+  }
+};
 </script>
 
 <style lang="less">
-    .my-container{
-        width: 100%;
-        height: 100%;
-        background:rgba(232,233,236,1);
-        .my-header{
-            width: 100%;
-            height:60px;
-            background:rgba(255,255,255,1);
-            box-shadow:0px 2px 5px 0px rgba(63, 63, 63, 0.35);
-            display: flex;
-            justify-content: space-between;
-            .left{
-                display: flex;
-                align-items: center;
-                height: 100%;
-                i{
-                    font-size: 24px;
-                    margin-right: 22px;
-                }
-                img{
-                    width: 33px;
-                    height: 28px;
-                    margin-right: 11px;
-                }
-                span{
-                    width:92px;
-                    height:22px;
-                    font-size:22px;
-                    font-family:Microsoft YaHei;
-                    font-weight:bold;
-                    color:rgba(73,161,255,1);
-                }
-            }
-            .right{
-                display: flex;
-                align-items: center;
-                height: 100%;
-                img{
-                    margin-right: 9px;
-                    width:43px;
-                    height:43px;
-                }
-                .name{
-                    font-size: 14px;
-                    margin-right: 38px;
-                }
-
-            }
-        }
-        .my-asid{
-            width:201px;
-            height:100%;
-            background:rgba(255,255,255,1);
-            box-shadow:0px 2px 5px 0px rgba(63, 63, 63, 0.35);
-        }
-        .my-main{
-            background-color: yellow;
-             height:100%;
-            box-shadow:0px 2px 5px 0px rgba(63, 63, 63, 0.35);
-            background:rgba(255,255,255,1);
-
-        }
-
+.my-container {
+  width: 100%;
+  height: 100%;
+//   background: rgba(232, 233, 236, 1);
+  .my-header {
+    width: 100%;
+    height: 60px;
+   
+    display: flex;
+    justify-content: space-between;
+    .left {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      i {
+        font-size: 24px;
+        margin-right: 22px;
+      }
+      img {
+        width: 33px;
+        height: 28px;
+        margin-right: 11px;
+      }
+      span {
+        width: 92px;
+        height: 22px;
+        font-size: 22px;
+        font-family: Microsoft YaHei;
+        font-weight: bold;
+        color: rgba(73, 161, 255, 1);
+      }
     }
- 
+    .right {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      img {
+        margin-right: 9px;
+        width: 43px;
+        height: 43px;
+      }
+      .name {
+        font-size: 14px;
+        margin-right: 38px;
+      }
+    }
+  }
+  
+   .my-main {
+    background-color:  rgba(232, 233, 236, 1);
+  }
+//   这几行代码是饿了么复制的,能控制展开折叠时候 动画流畅
+  .el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
+    }
+}
 </style>

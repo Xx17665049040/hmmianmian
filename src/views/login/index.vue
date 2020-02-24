@@ -73,7 +73,7 @@ import reg from './components/register';
 // 导入封装好的登录请求方法
 import { login } from "@/api/login.js"
 
-import '@/utilis/token.js'
+import { setToken } from'@/utilis/token.js'
 
 export default {
   // 2.注册组件
@@ -135,8 +135,8 @@ export default {
             window.console.log(res)
             if(res.data.code==200){
               //把token存储起来 已经封装好了函数
-              window.localStorage.setItem('token',res.data.data.token)
-              // setToken(res.data.data.token)
+              // window.localStorage.setItem('token',res.data.data.token)
+              setToken(res.data.data.token)
 
               this.$message.success('登录成功')
               //登录跳转
