@@ -21,29 +21,29 @@
         <!-- 左侧导航栏 -->
         <!-- 这里的width不能写死,要随着内容折叠变小 只要换成auto -->
       <el-aside class="my-asid" width="auto">
-          <!-- :collapse="isCollapse" 用来控制折叠或者展开 -->
-          <el-menu :collapse="isCollapse"  default-active="1" class="el-menu-vertical-demo">
-            <el-menu-item index="1">
+          <!-- :collapse="isCollapse" 用来控制折叠或者展开   写上router 代表启用路由模式 点击菜单会跳转 到修改子标题的index路径-->
+          <el-menu :collapse="isCollapse" router="" default-active="1" class="el-menu-vertical-demo">
+            <el-menu-item index="/index/chart">
                <i class="el-icon-pie-chart"></i>
                <span slot="title">数据概览</span>
              </el-menu-item> 
 
-             <el-menu-item index="2">
+             <el-menu-item index="/index/user">
                <i class="el-icon-user"></i>
                <span slot="title">用户列表</span>
              </el-menu-item> 
 
-            <el-menu-item index="3">
+            <el-menu-item index="/index/question">
                <i class="el-icon-edit-outline"></i>
                <span slot="title">题库列表</span>
              </el-menu-item> 
 
-             <el-menu-item index="4">
+             <el-menu-item index="/index/business">
                <i class="el-icon-office-building"></i>
                <span slot="title">企业列表</span>
              </el-menu-item> 
 
-             <el-menu-item index="5">
+             <el-menu-item index="/index/subject">
                <i class="el-icon-notebook-2"></i>
                <span slot="title">学科列表</span>
              </el-menu-item> 

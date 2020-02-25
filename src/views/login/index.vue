@@ -85,10 +85,10 @@ export default {
     return {
       // 跟表单双向绑定的数据
       form: {
-        phone: "",
-        password: "",
+        phone: "18511111111",
+        password: "12345678",
         code: "",
-        agree:false,
+        agree:true,
         
       },
       //图形验证码的接口地址

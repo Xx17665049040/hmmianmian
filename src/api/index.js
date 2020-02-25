@@ -9,11 +9,33 @@ let indexRequest = axios.create({
     //基地址
     baseURL:process.env.VUE_APP_URL,
     //请求头
-    headers:{
-        token:getToken()
-    },
+    //因为接口文件index.js 是在项目一启动就执行,(所有导入的js文件 都是在项目启动就执行) 而此时是第一次访问网站,那么肯定没有token,
+    //就导致了你的请求头headers里面的token是null,所以会出现登进去不能及时显示用户信息
+    //为什么刷信又有了  那是因为重新启动了项目 此时token已经被保存,所以再执行index.js的时候 就能读取到token了
+
+    //解决办法:  不要页面一加载就设置token给请求头,因为那时候还没有token,等发请求的时候 再获取token
+            //  方法1 不要在这里设置请求头,请求头写回请求方法中  比较麻烦
+
+            // 主要方法 -- axios的请求拦截 (只要axios发的请求 都会拦截下来)
+
+    // headers:{
+    //     token:getToken()
+    // },
     // withCredentials:true  
 })
+
+//添加请求拦截 把axios替换成indexRequest  意思是 只要indexRequest发的请求 都会被拦截
+
+indexRequest.interceptors.request.use(function(config) {
+    config.headers.token=getToken()  //代表每次首页里的请求都会被拦下来,并且加一个token
+
+    //在发送之前做些什么
+    return config
+},function(error){
+    //对请求错误做些什么
+    return Promise.reject(error)
+    }
+)
 
 //用户信息
 export function info(){
@@ -33,6 +55,7 @@ export function info(){
     return indexRequest({
         url:'/info',
         method:'get',
+       
     })
 }
 
@@ -53,5 +76,6 @@ export function logout(){
     return indexRequest({
         url:'/logout',
         method:'get',
+        
     })
 }
