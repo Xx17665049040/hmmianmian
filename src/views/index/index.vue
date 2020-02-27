@@ -9,8 +9,8 @@
         <span>黑马面面</span>
       </div>
       <div class="right">
-        <img :src="avatar" alt="" />
-        <span class="name">{{ username }},你好</span>
+        <img :src="$store.state.avatar" alt="" />
+        <span class="name">{{ $store.state.username }},你好</span>
         <el-button @click="doLogout" type="primary" size="small"
           >退出</el-button
         >
@@ -62,24 +62,48 @@
 
 <script>
 //导入个人信息接口
-import { info,logout} from "@/api/index.js";
+import { logout } from "@/api/index.js";
 //导入操作token接口
-import { removeToken } from "@/utilis/token.js";
+import { removeToken,getToken} from "@/utilis/token.js";
+
+// import store from '@/store/index.js'
 export default {
   data() {
     return {
-      username: "",
-      avatar: "",
+      // username: "",
+      // avatar: "",
       isCollapse:false
     };
   },
+  //判断是否登录 越早越好 如果登录了就有token 没有登录就没有 要判断getToken()==null  如果没有返回登录页面
+  //写在beforecreat里面 因为他比较早 也不需要访问页面data数据 直接判断就行
+
+  beforeCreate(){   //如果没有登录就输入网址 就不要让进去
+    if( getToken()==null ){
+      this.$message.error('请先登录'),
+      this.$router.push('/login')
+    }
+    // document.title='首页'
+  },
+
   created() {
-    //获取个人信息的请求
-    info().then(res => {
-      console.log(res),
-        (this.username = res.data.data.username),
-        (this.avatar = process.env.VUE_APP_URL + "/" + res.data.data.avatar);
-    });
+    //获取个人信息的请求  
+    //要判断loken的值是否正确 如果正确 就将返回信息渲染 不正确回到登录页 清除错误token
+
+    // info().then(res => {
+    //   // console.log(res),
+    //   if(res.data.code==200){
+    //     this.username = res.data.data.username;
+    //     // 记得在前面还要拼接基地址，因为返回的头像路径不完整，要拼接
+    //     // 还要拼接/，不然就连在一起了
+    //     this.avatar = process.env.VUE_APP_URL + "/" + res.data.data.avatar
+    //   }else if(res.data.code == 206){
+    //     this.$message.error('登录状态异常,请重新登录')
+    //     this.$router.push('/login');
+    //     removeToken()
+    //   }
+       
+    // });
   },
   methods: {
     doLogout() {
@@ -94,6 +118,10 @@ export default {
             this.$message.success("退出成功");
             removeToken();
             this.$router.push("/login")
+            //退出后 头像信息都还在 需要清除vuex的东西 赋值为空就行
+            this.$store.commit.changeUserName=""
+            this.$store.commit.changeAvatar=""
+
          })
         })
         .catch(() => {

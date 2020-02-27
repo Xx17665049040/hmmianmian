@@ -10,6 +10,9 @@ Vue.use(ElementUI);
 //导入路由对象
 import router from './router/index'
 
+//导入vuex
+import store from '@/store/index'
+
 //导入全局样式
 import "./style/base.css"
 
@@ -18,6 +21,7 @@ Vue.config.productionTip = false
 
 new Vue({
   render: h => h(App),
-  router
+  router,
+  store
 }).$mount('#app')
 

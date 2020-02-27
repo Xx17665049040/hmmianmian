@@ -6,7 +6,10 @@
 
 <script>
 export default {
-    
+    //添加标题的方法1
+    // beforeCreate(){
+    //     document.title="学科"
+    // }
 }
 </script>
 

@@ -6,7 +6,9 @@
 
 <script>
 export default {
-    
+    // beforeCreate(){
+    //     document.title="用户"
+    // }
 }
 </script>
 
