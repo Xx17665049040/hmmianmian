@@ -13,8 +13,11 @@ import router from './router/index'
 //导入vuex
 import store from '@/store/index'
 
+//导入全局过滤器
+import '@/utilis/filter'  //这里能这样简单导入 是因为不需要引用具体某个方法,只要能执行里面的代码就行
+
 //导入全局样式
-import "./style/base.css"
+import "./style/base.css"   
 
 
 Vue.config.productionTip = false

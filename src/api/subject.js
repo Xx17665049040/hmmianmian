@@ -39,3 +39,34 @@ export function subjectStatus(data){
         data
     })
 }
+
+//封装一个添加学科的接口
+export function subjectAdd(data){
+    
+    return subjectRequest({
+        url:'/subject/add',
+        method:'post',
+        data
+    })
+}
+
+//封装一个编辑学科的接口
+export function subjectEdit(data){
+    
+    return subjectRequest({
+        url:'/subject/edit',
+        method:'post',
+        data
+    })
+}
+
+
+//封装一个删学科的接口
+export function subjectDel(data){
+    
+    return subjectRequest({
+        url:'/subject/remove',
+        method:'post',
+        data
+    })
+}
