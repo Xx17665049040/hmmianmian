@@ -1,165 +1,216 @@
 <template>
   <div>
-    <!-- 上面卡片 -->
+ 
     <el-card class="box-card">
-      <!-- 表单  :inline="true" true 一行显示多个 false一行只显示一个-->
-      <el-form ref="formInline" :inline="true" :model="formInline" class="demo-form-inline ">
-        <el-form-item label="学科编号" prop="rid">
-          <el-input
-            class="short"
-            v-model="formInline.rid"
-            placeholder="审批人"
-          ></el-input>
+      <el-form ref="formInline" :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="企业编号" prop="rid">
+          <el-input class="short" v-model="formInline.rid"></el-input>
         </el-form-item>
-        <el-form-item label="学科名称" prop="name">
-          <el-input
-            class="normal"
-            v-model="formInline.name"
-            placeholder="审批人"
-          ></el-input>
+        <el-form-item label="企业名称" prop="name">
+          <el-input class="normal" v-model="formInline.name"></el-input>
         </el-form-item>
         <el-form-item label="创建者" prop="username">
-          <el-input
-            class="short"
-            v-model="formInline.username"
-            placeholder="审批人"
-          ></el-input>
+          <el-input class="short" v-model="formInline.username"></el-input>
         </el-form-item>
         <el-form-item label="状态" prop="status">
-          <el-select
-            class="normal"
-            v-model="formInline.status"
-            placeholder="请选择">
-            <!-- el-option 下拉框  label是默认的显示内容   value是你选中的label 真正的值 比如你选则了启用 那他的值就是1 -->
-            <!-- 1是true 启用  0是false 禁用 -->
+          <el-select class="normal" v-model="formInline.status">
             <el-option label="启用" value="1"></el-option>
             <el-option label="禁用" value="0"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="doSearch()">搜索</el-button>
+          <el-button type="primary" @click="doSearch">搜索</el-button>
           <el-button @click="doClear">清除</el-button>
-          <el-button type="primary" @click="$refs.subjectAdd.dialogFormVisible=true">新增学科</el-button>
+           <!-- 二.准备新增对话框,导入组件 并点击弹出对话框 -->
+          <el-button type="primary" icon="el-icon-plus" @click="showAdd">新增企业</el-button>
         </el-form-item>
       </el-form>
     </el-card>
 
-    <!-- 下面卡片 -->
+ 
     <el-card class="box-card">
-      <!-- 表格  -->
       <el-table :data="tableData" style="width: 100%">
-        <el-table-column type="index" label="序号" width="100">
-        </el-table-column>
-
-        <el-table-column prop="rid" label="学科编号" width="180">
-        </el-table-column>
-
-        <el-table-column prop="name" label="学科名称"> </el-table-column>
-
-        <el-table-column prop="short_name" label="简称"> </el-table-column>
-
-        <el-table-column prop="username" label="创建者"> </el-table-column>
-
-        <el-table-column prop="create_time" label="创建日期"> 
-            <!-- 要用自定义的时间 就要用template包裹   把创建日期用全局过滤器显示-->
+        <el-table-column type="index" label="序号" width="50"></el-table-column>
+        <el-table-column prop="rid" label="企业编号"></el-table-column>
+        <el-table-column prop="name" label="企业名称"></el-table-column>
+        <el-table-column prop="username" label="创建者"></el-table-column>
+        <el-table-column prop="create_time" label="创建日期">
           <template slot-scope="scope">
-                {{scope.row.create_time | formatTime }}   
+          
+            {{ scope.row.create_time | formatTime }}
           </template>
-
         </el-table-column>
-
         <el-table-column prop="status" label="状态">
-          <!-- 需要添加自定义列 -->
           <template slot-scope="scope">
-            <!-- scope.row.  拿这一行的数据 -->
             <span v-if="scope.row.status === 1">启用</span>
-            <span v-else style="color:red">禁用</span>
+            <span v-else style="color:red;">禁用</span>
           </template>
         </el-table-column>
-
-        <!-- 表格中的按钮 -->
-        <!-- 表格默认只能显示字符串 如果想放除了字符串以外的(比如按钮)
-          就要用自定义列模板 就是在el-table-column 标签里 再写一个template标签包裹 这个标签里面slot-scope="scope" -->
-         
         <el-table-column label="操作">
-          <template slot-scope="scope">
-            <!--scope.$index这一行的索引(索引一般不需要)  scope.row这一行的数据 用它当参数,就是把这一行的数据传过去 -->
-           
+          <template slot-scope="scope" >
             <el-button type="text" @click="showEdit(scope.row)">编辑</el-button>
-            <!-- scope.row.status===1 的时候 是启用 这里就要给禁用    因为这里文字颜色没有变化 所以只用字符串 三元表达就可以  但是字符串在这要用{{}}包起来-->
-            
-            <el-button type="text" @click="changeStatus(scope.row)">{{
-              scope.row.status === 1 ? "禁用" : "启用"
-            }}</el-button>
-            <!-- 把这一行的数据scope.row当做形参传过去 -->
-           
-            <el-button type="text" @click="doDel(scope.row)">删除</el-button>
+            <el-button type="text" @click="changeStatus(scope.row)">{{ scope.row.status==1?'禁用':'启用'}}</el-button>
+            <el-button type="text" @click="remove(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <!-- 分页 page-sizes这是设置可以选择的页容量(每页显示多少条)  page-size设置当前页容量是几  layout分页的布局效果 一般不懂-  total设置数据总量 background设置背景框 -->
       <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[10, 20, 30, 40]"
+        background
+        @current-change="pageChange"
+        @size-change="sizeChanged"
+        :current-page="page"
+        :page-sizes="[ 5, 10, 20, 30, 40]"
         :page-size="size"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
-      >
-      </el-pagination>
-
+      ></el-pagination>
     </el-card>
-
     
-      <!-- 添加框 -->
-      <subjectAdd ref="subjectAdd"></subjectAdd>
-      <subject-edit ref="subjectEdit"></subject-edit>
-
+    <!-- 弹出框 -->
+    <!-- <business-add ref="businessAdd"></business-add>
+     <business-edit ref='businessEdit'></business-edit> -->
+     <business-dialog ref="businessDialog"></business-dialog>
   </div>
 </template>
 
 <script>
-import { subjectList, subjectStatus,subjectDel } from "@/api/subject.js";
-
-import subjectAdd from './components/subjectAdd.vue'  //这两个界面都有自己的界面,所以在这导入了 就不需要再上面导入
-import subjectEdit from './components/subjectEdit.vue'
+// 导入请求数据 删除数据 修改启用状态  的请求方法 
+import {businessList,businessRemove,businessStatus} from '@/api/business.js'
+// import businessAdd from './components/businessAdd.vue'
+// import businessEdit from './components/businessEdit.vue'
+import businessDialog from './components/businessDialog'
 
 export default {
-  name:"subject",
-  components:{
-    subjectAdd,
-    subjectEdit
+  name: "business",
+  components: {
+    // businessAdd,
+    // businessEdit
+    businessDialog
   },
+
   data() {
     return {
-      //上面表单数据
-      formInline: {
-        user: "",
-        region: ""
-      },
-      // 表格数据
-      tableData: [],
-      currentPage: 1,
-      //页容量
-      size: 5,
-      total: 0,
+      formInline:{},
+      tableData:[],
+      page:1,
+      size:5,
+      total:0,
 
-      //设置一个变量保存弹出框编辑的内容
-      newEdit:null
+      olditem:null,
     };
   },
+
   methods: {
-   
+      getList(){
+          // 一:获取数据 这段代码很多地方要用 所以封装一下
+        businessList(
+           // 传入参数 设置一页多少条  还有搜索条件即 formInline里面的每一项
+          {page:this.page,limit:this.size, ...this.formInline}
+        ).then( res => {
+             console.log("企业信息",res)
+             //拿到企业的信息后 存到table  而table的数据 是绑定tableData的
+             this.tableData=res.data.data.items
+             // 还有将返回数据中的 total数 赋值进表格
+             this.total=res.data.data.pagination.total
+        }) 
+      },
+      //点击搜索
+      doSearch(){
+          // 刷选数据的时候 调用获取数据的方法
+          //这里还有问题.如果去了别的页 那么搜索的时候 就执搜那一页的  要把page该为1
+          this.page=1
+          this.getList()
+      },
+      // 点击清除
+      doClear(){
+          //调用表单的重置方法
+          this.$refs.formInline.resetFields() 
+          //重置后,重新请求 第一页 的数据
+          this.page=1
+          this.getList()
+      },
+      //修改页码  参数page 修改后的页码   将修改后的页码 串改this,page 然后调用那页数据
+       pageChange(page) {
+          this.page = page;
+          this.getList();
+        },
+        // 修改页容量  size 改变后的页容量  这些参数都是饿了么上面要求的
+      sizeChanged(size) {
+       this.size = size;
+       this.page = 1;
+       this.getList();
+      },
 
+      //点击删除 
+      remove(item){
+        //这里要注意的问题  如果是最后一条 就要刷新到上一页 如果是第一页的最后一条 就不用刷新到上一页
+          businessRemove({
+              id:item.id
+          }).then(res=>{
+              if(res.data.code==200){
+                
+                this.$message.success('删除成功')
+                // this.tableData.length==1  数据只剩一条的意思
+                if(this.tableData.length==1){
+                    this.page--;
+                }
 
+                if(this.page<1){
+                  this.page=1
+                }
+                
+                this.getList()
 
+              }else{
+                this.$message.error(res.data.message)
+              }
+          })
+      },
+
+      // 点击修改启用状态
+      changeStatus(item){
+        businessStatus({
+          id:item.id
+        }).then(res=>{
+          if(res.data.code==200){
+            this.$message.success('状态修改成功')
+            this.getList()
+          }else{
+          this.$message.error(res.data.message);
+
+          }
+        })
+      },
+
+      //弹出编辑对话框 点击那一行就要拿到那行的数据要添加 slot-scope="scope" 并拿到数据 scope.row 传进这里item
+      showEdit(item){
+          //显示
+          this.$refs.businessDialog.dialogFormVisible=true 
+          // 点击后 要修改isAdd的值 
+          this.$refs.businessDialog.isAdd=false
+          if(this.olditem != item ){ //这能解决点开不同一行时,修改后
+            //将table传过来的数据显示到 对话框(对话框放数据的地方 就是 form:{})   {...item}能拿到item对象里所有的内容
+          this.$refs.businessDialog.form= { ...item }
+          this.olditem=item
+          }
+        
+ 
+      },
+      showAdd(){
+        this.$refs.businessDialog.dialogFormVisible=true,
+        //每次点击新增的时候 要将对话框改为true 还要将对话框里的内容清空
+        this.$refs.businessDialog.isAdd=true
+        this.$refs.businessDialog.form={}
+      }
   },
 
   created() {
-   
-  }
+      this.getList()
+  },
+
+
+ 
 };
 </script>
 
@@ -168,13 +219,10 @@ export default {
   margin-bottom: 19px;
 }
 .short {
-  width: 100px;
+  width: 90px;
 }
+
 .normal {
-  width: 149px;
-}
-.el-pagination {
-  text-align: center;
-  margin-top: 15px;
+  width: 139px;
 }
 </style>

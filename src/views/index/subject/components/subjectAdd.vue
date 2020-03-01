@@ -68,7 +68,7 @@ export default {
                         window.console.log(res)
                         if(res.data.code == 200){
                             this.$message.success('新增成功')
-                            
+                            this.dialogFormVisible=false
                             //刷新表格数据 也就是重新调用学科请求的接口
                             this.$parent.getList()
                         }else{
