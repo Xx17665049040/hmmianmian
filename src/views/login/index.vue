@@ -138,7 +138,7 @@ export default {
               // window.localStorage.setItem('token',res.data.data.token)
               setToken(res.data.data.token)
 
-              this.$message.success('登录成功')
+              // this.$message.success('登录成功')  账号密码成功还不够 还要允许登录的账号才弹出
               //登录跳转
               this.$router.push('./index')
             }else{

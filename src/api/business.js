@@ -55,7 +55,7 @@ export function businessStatus(data){
 }
 
 //企业删除
-export function businessDell(data){
+export function businessRemove(data){
 
     return request({
         url:'/enterprise/remove',

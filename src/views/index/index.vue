@@ -23,12 +23,18 @@
       <el-aside class="my-asid" width="auto">
           <!-- :collapse="isCollapse" 用来控制折叠或者展开   写上router 代表启用路由模式 点击菜单会跳转 到修改子标题的index路径-->
           <el-menu :collapse="isCollapse" router="" default-active="1" class="el-menu-vertical-demo">
-            <el-menu-item index="/index/chart">
-               <i class="el-icon-pie-chart"></i>
-               <span slot="title">数据概览</span>
-             </el-menu-item> 
 
-             <el-menu-item index="/index/user">
+            <!-- 这里根据账号权限 来决定你能看到那几个列表  v-if="该账号是否属于 当前页面允许访问的角色"  而该账号的角色在路由才能拿到 所以需要vuex-->
+           <!-- $store.state.role 取到vuex里面保存的角色信息   一个标签里不允许同时 v-for v-if 所以在外面再写一个template标签来进行v-for遍历-->
+            <template v-for="(item,index) in childrenRouter">
+             <el-menu-item  :key="index" :index=" '/index/'+ item.path" v-if="item.meta.roles.includes($store.state.role)"  >
+               <i class="el-icon-pie-chart"></i>
+               <span slot="title">{{item.meta.title}}</span>
+             </el-menu-item> 
+             </template>
+             
+
+             <!-- <el-menu-item index="/index/user">
                <i class="el-icon-user"></i>
                <span slot="title">用户列表</span>
              </el-menu-item> 
@@ -46,7 +52,7 @@
              <el-menu-item index="/index/subject">
                <i class="el-icon-notebook-2"></i>
                <span slot="title">学科列表</span>
-             </el-menu-item> 
+             </el-menu-item>  -->
           </el-menu>
       </el-aside>
 
@@ -66,13 +72,18 @@ import { logout } from "@/api/index.js";
 //导入操作token接口
 import { removeToken,getToken} from "@/utilis/token.js";
 
+//导入子路由的规则
+import childrenRouter from '@/router/childrenRouter.js'
+
 // import store from '@/store/index.js'
 export default {
   data() {
     return {
       // username: "",
       // avatar: "",
-      isCollapse:false
+      isCollapse:false,
+      // 把路由的规则数组传入  上面的列表就可以遍历了
+      childrenRouter,
     };
   },
   //判断是否登录 越早越好 如果登录了就有token 没有登录就没有 要判断getToken()==null  如果没有返回登录页面
