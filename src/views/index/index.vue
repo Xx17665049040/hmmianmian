@@ -28,7 +28,7 @@
            <!-- $store.state.role 取到vuex里面保存的角色信息   一个标签里不允许同时 v-for v-if 所以在外面再写一个template标签来进行v-for遍历-->
             <template v-for="(item,index) in childrenRouter">
              <el-menu-item  :key="index" :index=" '/index/'+ item.path" v-if="item.meta.roles.includes($store.state.role)"  >
-               <i class="el-icon-pie-chart"></i>
+               <i :class="item.meta.icon"></i>
                <span slot="title">{{item.meta.title}}</span>
              </el-menu-item> 
              </template>
