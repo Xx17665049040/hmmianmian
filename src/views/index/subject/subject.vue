@@ -81,18 +81,18 @@
         <!-- 表格默认只能显示字符串 如果想放除了字符串以外的(比如按钮)
           就要用自定义列模板 就是在el-table-column 标签里 再写一个template标签包裹 这个标签里面slot-scope="scope" -->
          
-        <el-table-column label="操作">
+        <el-table-column label="操作" v-if="['超级管理员','管理员','老师'].includes($store.state.role)">
           <template slot-scope="scope">
             <!--scope.$index这一行的索引(索引一般不需要)  scope.row这一行的数据 用它当参数,就是把这一行的数据传过去 -->
            
-            <el-button type="text" @click="showEdit(scope.row)">编辑</el-button>
+            <el-button type="text" @click="showEdit(scope.row)" v-if="['超级管理员','管理员','老师'].includes($store.state.role)">编辑</el-button>
             <!-- scope.row.status===1 的时候 是启用 这里就要给禁用    因为这里文字颜色没有变化 所以只用字符串 三元表达就可以  但是字符串在这要用{{}}包起来-->
             
-            <el-button type="text" @click="changeStatus(scope.row)">{{
-              scope.row.status === 1 ? "禁用" : "启用"
-            }}</el-button>
+            <el-button type="text" @click="changeStatus(scope.row)" v-if="['超级管理员','管理员'].includes($store.state.role)">
+              {{scope.row.status === 1 ? "禁用" : "启用"}}
+              </el-button>
+              
             <!-- 把这一行的数据scope.row当做形参传过去 -->
-           
             <el-button type="text" @click="doDel(scope.row)">删除</el-button>
           </template>
         </el-table-column>

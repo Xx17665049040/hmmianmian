@@ -37,7 +37,7 @@ const routes = [
 
   { path:"/login",component:login,meta:{title:"登录"}},
   
-  { path:"/index",component:index,meta:{title:"首页",roles:['超级管理员','管理员']},
+  { path:"/index",component:index,meta:{title:"首页",roles:['超级管理员','管理员','老师','学生']},
     children:children
   //子路由的东西封装在childrenRouter.js了
 }  
