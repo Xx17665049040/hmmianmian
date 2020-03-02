@@ -93,7 +93,7 @@
               </el-button>
               
             <!-- 把这一行的数据scope.row当做形参传过去 -->
-            <el-button type="text" @click="doDel(scope.row)">删除</el-button>
+            <el-button type="text" @click="doDel(scope.row)"  v-if="['超级管理员','管理员'].includes($store.state.role)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
