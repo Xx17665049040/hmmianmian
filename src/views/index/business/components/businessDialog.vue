@@ -36,7 +36,7 @@
 
 <script>
 // import { subjectAdd } from '@/api/subject.js'
-import { businessEdit } from "@/api/business.js";
+import { businessEdit,businessAdd } from "@/api/business.js";
 
 export default {
   data() {
