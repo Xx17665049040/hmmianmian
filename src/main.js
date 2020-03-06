@@ -19,6 +19,11 @@ import '@/utilis/filter'  //这里能这样简单导入 是因为不需要引用
 //导入全局样式
 import "./style/base.css"   
 
+//导入和注册全局组件
+import subjectSelect from './components/subjectSelect.vue'
+import businessSelect from './components/businessSelect.vue'
+Vue.component('subjectSelect',subjectSelect)
+Vue.component('businessSelect',businessSelect)
 
 Vue.config.productionTip = false
 
